@@ -1,12 +1,12 @@
 import './styles/index.css';
 import { initialCards } from './scripts/cards.js';
-import { createCard, deleteCard, clickLike } from './scripts/card.js';
+import { createCard, deleteCard, handleClickLike } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 
 
 // объявление переменных
 
-const placesList = document.querySelector('.places__list');  // список карточек
+const cardsContainer = document.querySelector('.places__list');  // список карточек
 const profileAddButton = document.querySelector('.profile__add-button'); // кнопка открытия попапа карточек 
 const profileEditButton = document.querySelector('.profile__edit-button'); // кнопка открытия попапа профиля
 
@@ -30,52 +30,46 @@ const profileJob = document.querySelector('.profile__description'); // проф�
 
 // выведение карточки на страницу 
 initialCards.forEach(element => {
-  const card = createCard(element.link, element.name, deleteCard, clickLike, handleClickCard);
-  placesList.append(card);
+  const card = createCard(element, deleteCard, handleClickLike, openImagePopup);
+  cardsContainer.append(card);
 }); 
 
 // функция открытия модального окна с полноразмерным изображением карточки
-function handleClickCard(titleImage, sourceImage) {
-  popupFullImage.src = sourceImage;
-  popupFullImage.alt = titleImage;
-  popupCaption.textContent = titleImage;
+function openImagePopup(cardData) {
+  popupFullImage.src = cardData.link;
+  popupFullImage.alt = cardData.name;
+  popupCaption.textContent = cardData.name;
   openModal(popupImage);
 };
 
-// слушатель открытия попапа карточек 
-profileAddButton.addEventListener('click', () => {
-  openModal(popupCard);
-});
-
 // редактирование имени и информации о себе
-const handleFormSubmit = evt => {
+const handleEditProfileFormSubmit = evt => {
   evt.preventDefault();
   profileName.textContent = nameInput.value;
   profileJob.textContent = jobInput.value;
   closeModal(popupProfile);
 };
 
-// слушатель сабмита редактирования профиля
-popupProfile.addEventListener('submit', handleFormSubmit);
-
-// слушатель открытия попапа профиля
-profileEditButton.addEventListener('click', function() {
-  nameInput.value = profileName.textContent;
-  jobInput.value = profileJob.textContent;
-  openModal(popupProfile);
-});
-
 // добавление карточки
-
-const addNewCard = evt => {
+const handleAddCardFormSubmit = evt => {
   evt.preventDefault();
-  placesList.prepend(createCard(cardUrlInput.value, cardNameInput.value, deleteCard, clickLike, handleClickCard));
+
+  const card = {
+    name: cardNameInput.value,
+    link: cardUrlInput.value,
+  };
+
+  cardsContainer.prepend(createCard(card, deleteCard, handleClickLike, openImagePopup));
   popupCardForm.reset();
   closeModal(popupCard);
 };
 
-// слушатель сабмита добавления новой карточки
-popupCard.addEventListener('submit', addNewCard);
+// заполнение полей формы редактирования профиля
+const fillProfileInput = (popupProfile) => {
+  nameInput.value = profileName.textContent;
+  jobInput.value = profileJob.textContent;
+  openModal(popupProfile);
+}
 
 popupList.forEach(function (popupItem) {
   const popupCloseButton = popupItem.querySelector('.popup__close');
@@ -83,3 +77,17 @@ popupList.forEach(function (popupItem) {
     closeModal(popupItem);
   });
 });
+
+// слушатель сабмита редактирования профиля
+popupProfile.addEventListener('submit', handleEditProfileFormSubmit);
+
+// слушатель сабмита добавления новой карточки
+popupCard.addEventListener('submit', handleAddCardFormSubmit);
+
+// слушатель открытия попапа карточек 
+profileAddButton.addEventListener('click', () => {
+  openModal(popupCard);
+});
+
+// слушатель открытия попапа профиля
+profileEditButton.addEventListener('click', () => fillProfileInput(popupProfile));
