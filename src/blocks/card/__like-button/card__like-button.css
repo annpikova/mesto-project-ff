@@ -1,8 +1,15 @@
+.card__like-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
 .card__like-button {
   width: 21px;
   height: 18px;
-  background: transparent url('../../../images/like-inactive.svg') no-repeat;
-  
+  background: transparent url('../../../images/like-inactive.svg');
+  background-repeat: no-repeat;
   background-size: 21px 18px;
   border: none;
   cursor: pointer;
@@ -17,4 +24,16 @@
 
 .card__like-button:hover {
   opacity: 0.6;
+}
+
+/*
+.card__like-counter {
+  display: none;
+  font-size: 13px;
+  line-height: 15.73px;
+}
+*/
+
+.card__like-counter_is-active {
+  display: block;
 }
