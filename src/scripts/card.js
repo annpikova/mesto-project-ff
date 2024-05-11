@@ -3,22 +3,14 @@ import { deleteCard, clickCardLike, deleteCardLike } from "./api.js";
 const cardTemplate = document.querySelector("#card-template").content;
 
 // функция создания карточки
-export function createCard(
-  cardData,
-  userId,
-  deleteCallback,
-  handleClickLike,
-  handleClickCard
-) {
+export function createCard(cardData, userId, deleteCallback, handleClickLike, handleClickCard) {
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   const cardImage = cardElement.querySelector(".card__image");
   const cardTitle = cardElement.querySelector(".card__title");
   const deleteButton = cardElement.querySelector(".card__delete-button");
-  const likeButtonContainer = cardElement.querySelector(
-    ".card__like-container"
-  );
+  const likeButtonContainer = cardElement.querySelector(".card__like-container");
   const likeButton = cardElement.querySelector(".card__like-button");
-  const likeButtonActive = '.card__like-button_is-active';
+  const likeButtonActive = "card__like-button_is-active";
   const likeCounter = likeButtonContainer.querySelector(".card__like-counter");
 
   cardImage.src = cardData.link;
@@ -63,6 +55,7 @@ export const deleteCallback = (cardId, cardElement) => {
     });
 };
 
+
 // функция добавления/удаления лайка
 export const handleClickLike = (
   like,
@@ -91,3 +84,4 @@ const countLike = (counter, cardData) => {
     counter.classList.remove(".card__like-counter_is-active");
   }
 };
+

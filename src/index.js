@@ -19,9 +19,9 @@ const profileEditButton = document.querySelector(".profile__edit-button"); // к
 const popupCard = document.querySelector(".popup_type_new-card"); // попап добавления новой карточки
 const profileAddButton = document.querySelector(".profile__add-button"); // кнопка открытия попапа карточек
 
-const editProfileForm = document.forms["edit-profile"];
-const createCardForm = document.forms["new-place"];
-const changeAvatarForm = document.forms["new-avatar"];
+const formEditProfile = document.forms["edit-profile"];
+const formCreateCard = document.forms["new-place"];
+const formChangeAvatar = document.forms["new-avatar"];
 
 const popupImage = document.querySelector(".popup_type_image"); // попап полнораземного изображения
 const popupFullImage = popupImage.querySelector(".popup__image"); // изображение в полном размере
@@ -54,17 +54,20 @@ const validationConfig = {
 // изменение аватара
 const handleChangeAvatar = (evt) => {
   evt.preventDefault();
-
   const avatarLink = avatarInput.value;
+  evt.submitter.textContent = 'Сохранение...';
   changeAvatar(avatarLink)
     .then((avatar) => {
       profileImage.src = avatar.avatar;
-      closeModal(avatarInput);
+      //closeModal(avatarInput);
+      closeModal(popupAvatar);
     })
     .catch((err) => {
       console.log(err);
-    });
-  closeModal(popupAvatar);
+    })
+    .finally(() => {
+      evt.submitter.textContent = 'Сохранить';
+    })
 };
 
 // добавление карточки
@@ -73,6 +76,8 @@ const handleAddCardFormSubmit = (evt) => {
 
   const name = cardNameInput.value;
   const link = cardUrlInput.value;
+
+  evt.submitter.textContent = 'Сохранение...';
 
   postNewCard(name, link)
     .then((cardData) => {
@@ -85,11 +90,14 @@ const handleAddCardFormSubmit = (evt) => {
           openImagePopup
         )
       );
+      closeModal(popupCard);
     })
     .catch((err) => {
       console.log(err);
-    });
-  closeModal(popupCard);
+    })
+    .finally(() => {
+      evt.submitter.textContent = 'Сохранить';
+    })
 };
 
 // редактирование имени и информации о себе
@@ -99,19 +107,24 @@ const handleEditProfileFormSubmit = (evt) => {
   const name = nameInput.value;
   const job = jobInput.value;
 
+  evt.submitter.textContent = 'Сохранение...';
+
   editProfile(name, job)
     .then(() => {
       profileName.textContent = nameInput.value;
       profileJob.textContent = jobInput.value;
+      closeModal(popupProfile);
     })
     .catch((err) => {
       console.log(err);
-    });
-  closeModal(popupProfile);
+    })
+    .finally(() => {
+      evt.submitter.textContent = 'Сохранить';
+    })  
 };
 
 avatarButton.addEventListener("click", () => {
-  clearValidation(changeAvatarForm, validationConfig),
+  clearValidation(formChangeAvatar, validationConfig),
   openModal(popupAvatar);
 });
 
@@ -132,14 +145,14 @@ const openImagePopup = (cardData) => {
 
 // слушатель открытия попапа профиля
 profileEditButton.addEventListener("click", () => {
-  clearValidation(editProfileForm, validationConfig);
+  clearValidation(formEditProfile, validationConfig);
   fillProfileInput(popupProfile);
 });
 
 // слушатель открытия попапа карточек
 profileAddButton.addEventListener("click", () => {
-  createCardForm.reset(),
-    clearValidation(createCardForm, validationConfig),
+  formCreateCard.reset(),
+    clearValidation(formCreateCard, validationConfig),
     openModal(popupCard);
 });
 
@@ -166,15 +179,16 @@ Promise.all([getUser(), getInitialCards()])
     profileJob.textContent = user.about;
 
     profileImage.src = user.avatar;
+    profileImage.alt = user.name;
   })
   .catch((err) => {
     console.log(err);
   });
 
 // обработчики модальных окон
-editProfileForm.addEventListener("submit", handleEditProfileFormSubmit);
-createCardForm.addEventListener("submit", handleAddCardFormSubmit);
-changeAvatarForm.addEventListener("submit", handleChangeAvatar);
+formEditProfile.addEventListener("submit", handleEditProfileFormSubmit);
+formCreateCard.addEventListener("submit", handleAddCardFormSubmit);
+formChangeAvatar.addEventListener("submit", handleChangeAvatar);
 
 
 popupList.forEach(function (popupItem) {

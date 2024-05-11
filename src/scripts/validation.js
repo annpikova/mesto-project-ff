@@ -63,10 +63,8 @@ export const enableValidation = (validationConfig) => {
   formList.forEach((formElement) => {
     formElement.addEventListener("submit", (evt) => {
       evt.preventDefault();
-      const buttonElement = formElement.querySelector(
-        validationConfig.submitButtonSelector
-      );
-      buttonElement.textContent = "Сохранение...";
+      //const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
+      //buttonElement.textContent = "Сохранение...";
     });
     setEventListeners(formElement, validationConfig);
   });
